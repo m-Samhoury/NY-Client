@@ -8,6 +8,7 @@ import com.moustafa.nyclient.model.NYArticle
 import com.moustafa.nyclient.repository.Repository
 import com.moustafa.nyclient.ui.misc.AsyncState
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 /**
@@ -23,6 +24,7 @@ class ArticlesListViewModel(
     private val repository: Repository,
     private val state: ArticlesListState = ArticlesListState()
 ) : ViewModel() {
+    private var searchFor = ""
 
     private val _stateLiveData = MutableLiveData<ArticlesListState>()
     val stateLiveData: LiveData<ArticlesListState> = _stateLiveData
@@ -31,7 +33,7 @@ class ArticlesListViewModel(
         fetchNYArticles()
     }
 
-    fun fetchNYArticles(searchQuery: String = "") {
+    private fun fetchNYArticles(searchQuery: String = "") {
         _stateLiveData.value = state.copy(articlesListAsyncState = AsyncState.Loading)
 
         viewModelScope.launch(Dispatchers.Main) {
@@ -43,6 +45,23 @@ class ArticlesListViewModel(
                 _stateLiveData.value =
                     state.copy(articlesListAsyncState = AsyncState.Loaded(response))
             }
+        }
+    }
+
+    fun queriedFetchNYArticles(searchQuery: String) {
+        val searchText = searchQuery.trim()
+        if (searchText == searchFor) {
+            return
+        }
+
+        searchFor = searchText
+        viewModelScope.launch(Dispatchers.Main) {
+            delay(400)  //debounce timeOut
+            if (searchQuery != searchFor) {
+                return@launch
+            }
+
+            fetchNYArticles(searchQuery)
         }
     }
 

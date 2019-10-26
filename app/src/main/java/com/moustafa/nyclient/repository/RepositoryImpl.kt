@@ -15,7 +15,7 @@ class RepositoryImpl(val service: NYArticlesService) : Repository {
         onError: (Exception) -> Unit
     ): List<NYArticle>? {
         val response = safeApiCall({
-            service.fetchArticlesList()
+            service.fetchArticlesList(query = searchQuery)
         }, onError)
 
         return response?.response?.docs
