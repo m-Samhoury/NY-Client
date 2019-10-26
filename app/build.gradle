@@ -13,6 +13,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField "String", "BASE_API_URL", "\"$BASE_API_URL\""
+        buildConfigField "String", "BASE_IMAGE_URL", "\"$BASE_IMAGE_URL\""
     }
     buildTypes {
         release {

@@ -22,7 +22,7 @@ class ArticlesListAdapter(private val onRowClicked: ((View, Int) -> Any)? = null
         private val DIFF_CALLBACK = object :
             DiffUtil.ItemCallback<NYArticle>() {
             override fun areItemsTheSame(oldItem: NYArticle, newItem: NYArticle): Boolean =
-                oldItem.id == newItem.id
+                oldItem == newItem
 
             override fun areContentsTheSame(oldItem: NYArticle, newItem: NYArticle): Boolean =
                 oldItem == newItem
@@ -51,7 +51,7 @@ class ArticlesListAdapter(private val onRowClicked: ((View, Int) -> Any)? = null
         }
 
         fun bind(item: NYArticle) {
-            itemView.textViewArticleName.text = item.id
+            itemView.textViewArticleName.text = item.abstract
         }
     }
 }

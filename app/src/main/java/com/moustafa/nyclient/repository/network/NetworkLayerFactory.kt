@@ -2,6 +2,10 @@ package com.moustafa.nyclient.repository.network
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.moustafa.nyclient.model.NYArticlesResponse
+import com.moustafa.nyclient.model.NYMetaResponse
+import com.moustafa.nyclient.model.NYResponse
+import com.moustafa.nyclient.utils.DateAdapter
 import com.squareup.moshi.Moshi
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
@@ -33,9 +37,12 @@ object NetworkLayerFactory {
             .retryOnConnectionFailure(false)
 
     fun createMoshiInstance() = Moshi.Builder()
+        .add(DateAdapter())
         .build()
         .apply {
-
+            adapter(NYArticlesResponse::class.java)
+            adapter(NYResponse::class.java)
+            adapter(NYMetaResponse::class.java)
         }
 
     inline fun <reified T> makeServiceFactory(
