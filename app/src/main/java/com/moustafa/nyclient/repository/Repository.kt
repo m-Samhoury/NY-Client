@@ -1,5 +1,6 @@
 package com.moustafa.nyclient.repository
 
+import com.moustafa.nyclient.model.NYArticle
 import retrofit2.Response
 
 
@@ -9,6 +10,7 @@ import retrofit2.Response
  */
 interface Repository {
 
+    suspend fun fetchArticlesList(searchQuery: String): List<NYArticle>?
 
 }
 

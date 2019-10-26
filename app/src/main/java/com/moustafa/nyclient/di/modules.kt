@@ -5,7 +5,9 @@ import com.moustafa.nyclient.repository.Repository
 import com.moustafa.nyclient.repository.RepositoryImpl
 import com.moustafa.nyclient.repository.network.NYArticlesService
 import com.moustafa.nyclient.repository.network.NetworkLayerFactory
+import com.moustafa.nyclient.ui.articleslist.ArticlesListViewModel
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
@@ -22,5 +24,5 @@ val repositoryModule: Module = module {
     single<Repository> { RepositoryImpl(get()) }
 }
 val viewModelsModule: Module = module {
-
+    viewModel { ArticlesListViewModel(repository = get()) }
 }
