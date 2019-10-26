@@ -35,7 +35,10 @@ class ArticlesListViewModel(
         _stateLiveData.value = state.copy(articlesListAsyncState = AsyncState.Loading)
 
         viewModelScope.launch(Dispatchers.Main) {
-            val response = repository.fetchArticlesList(searchQuery)
+            val response = repository.fetchArticlesList(searchQuery) {
+                _stateLiveData.value =
+                    state.copy(articlesListAsyncState = AsyncState.Failed(it))
+            }
             if (response != null) {
                 _stateLiveData.value =
                     state.copy(articlesListAsyncState = AsyncState.Loaded(response))

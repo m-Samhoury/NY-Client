@@ -7,7 +7,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.moustafa.nyclient.R
 import com.moustafa.nyclient.base.BaseFragment
+import com.moustafa.nyclient.model.NYArticle
 import com.moustafa.nyclient.ui.misc.AsyncState
+import com.moustafa.nyclient.utils.ItemDecorationCustomMargins
 import kotlinx.android.synthetic.main.fragment_articles_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -39,6 +41,7 @@ class ArticlesListFragment : BaseFragment(R.layout.fragment_articles_list) {
             }
             is AsyncState.Loaded -> {
                 showLoading(false)
+                populateArticlesList(articlesListState.result)
             }
             is AsyncState.Failed -> {
                 showLoading(false)
@@ -46,10 +49,20 @@ class ArticlesListFragment : BaseFragment(R.layout.fragment_articles_list) {
             }
         }
 
+    private fun populateArticlesList(list: List<NYArticle>) {
+        articlesListAdapter.submitList(list)
+    }
+
     override fun setupViews(rootView: View) {
         recyclerViewArticlesList.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = articlesListAdapter
+            addItemDecoration(
+                ItemDecorationCustomMargins(
+                    top = 8, bottom = 8,
+                    start = 16, end = 16
+                )
+            )
         }
     }
 
@@ -60,7 +73,6 @@ class ArticlesListFragment : BaseFragment(R.layout.fragment_articles_list) {
             progressBarLoadingArticles.hide()
         }
     }
-
 
     private fun showError(throwable: Throwable, action: (() -> Any)? = null) {
         val snackBar = Snackbar.make(

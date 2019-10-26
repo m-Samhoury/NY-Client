@@ -1,9 +1,10 @@
 package com.moustafa.nyclient.repository.network
 
-import com.moustafa.nyclient.model.NYArticle
+import com.moustafa.nyclient.BuildConfig
+import com.moustafa.nyclient.model.NYArticlesResponse
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
  * @author moustafasamhoury
@@ -12,9 +13,10 @@ import retrofit2.http.Path
 
 interface NYArticlesService {
 
-    @GET("articlesearch.json?q={query}&fq={filter}")
+    @GET("search/v2/articlesearch.json")
     suspend fun fetchArticlesList(
-        @Path("query") query: String,
-        @Path("filter") filter: String
-    ): Response<List<NYArticle>>
+        @Query("q") query: String = "",
+        @Query("fq") filter: String? = null,
+        @Query("api-key") apiKey: String = BuildConfig.NY_API_KEY
+    ): Response<NYArticlesResponse>
 }

@@ -31,18 +31,18 @@ data class NYArticle(
     val multimedia: List<Multimedia>? = null
 ) {
     val thumbnailUrl
-        get() = BuildConfig.BASE_IMAGE_URL + multimedia?.filter {
+        get() = multimedia?.firstOrNull() {
             val typeIsImage = TYPE_IMAGE.equals(other = it.type, ignoreCase = true)
             val subtypeIsThumbnail = SUBTYPE_THUMBNAIL.equals(other = it.subtype, ignoreCase = true)
             typeIsImage && subtypeIsThumbnail
-        }
+        }?.url?.let { BuildConfig.BASE_IMAGE_URL + it }
 
     val largeUrl
-        get() = BuildConfig.BASE_IMAGE_URL + multimedia?.filter {
+        get() = multimedia?.firstOrNull() {
             val typeIsImage = TYPE_IMAGE.equals(other = it.type, ignoreCase = true)
             val subtypeIsXLarge = SUBTYPE_X_LARGE.equals(other = it.subtype, ignoreCase = true)
             typeIsImage && subtypeIsXLarge
-        }
+        }?.url?.let { BuildConfig.BASE_IMAGE_URL + it }
 
     companion object {
         const val TYPE_IMAGE = "image"

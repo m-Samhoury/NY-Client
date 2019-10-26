@@ -10,7 +10,10 @@ import retrofit2.Response
  */
 interface Repository {
 
-    suspend fun fetchArticlesList(searchQuery: String): List<NYArticle>?
+    suspend fun fetchArticlesList(
+        searchQuery: String,
+        onError: (Exception) -> Unit
+    ): List<NYArticle>?
 
 }
 
