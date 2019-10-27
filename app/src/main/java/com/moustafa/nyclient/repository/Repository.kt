@@ -11,6 +11,7 @@ import retrofit2.Response
 interface Repository {
 
     suspend fun fetchArticlesList(
+        page: Int,
         searchQuery: String,
         onError: (Exception) -> Unit
     ): List<NYArticle>?

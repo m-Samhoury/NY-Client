@@ -1,4 +1,4 @@
-package com.moustafa.nyclient.utils
+package com.moustafa.nyclient.utils.glide
 
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -10,6 +10,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withC
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.moustafa.nyclient.utils.px
 
 
 /**
@@ -27,7 +28,9 @@ fun ImageView.load(
     onSuccess: ((Drawable?) -> Unit)? = null,
     onFailed: (() -> Unit)? = null
 ) {
-    var requestBuilder: GlideRequest<Drawable> = GlideApp.with(this)
+    var requestBuilder: GlideRequest<Drawable> = GlideApp.with(
+        this
+    )
         .load(imageUrl)
         .transition(withCrossFade())
 

@@ -8,7 +8,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.moustafa.nyclient.R
 import com.moustafa.nyclient.model.NYArticle
-import com.moustafa.nyclient.utils.load
+import com.moustafa.nyclient.utils.formatted
+import com.moustafa.nyclient.utils.glide.load
 import kotlinx.android.synthetic.main.item_articles_list.view.*
 
 /**
@@ -52,12 +53,13 @@ class ArticlesListAdapter(private val onRowClicked: ((View, Int) -> Any)? = null
         }
 
         fun bind(item: NYArticle) {
+            itemView.textViewPublishDate.text = item.publishDate?.formatted()
             itemView.textViewArticleTitle.text = item.abstract
             itemView.textViewArticleParagraph.text = item.snippet
 
-            if (item.thumbnailUrl?.isNotBlank() == true) {
+            if (item.largeUrl?.isNotBlank() == true) {
                 itemView.imageViewArticleThumbnail.load(
-                    item.thumbnailUrl!!,
+                    item.largeUrl!!,
                     roundedCorners = 4,
                     onFailed = {
                         itemView.imageViewArticleThumbnail.setImageResource(R.drawable.ic_news)

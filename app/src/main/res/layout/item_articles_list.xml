@@ -12,6 +12,18 @@
         android:layout_marginBottom="16dp">
 
         <TextView
+            android:id="@+id/textViewPublishDate"
+            style="@style/minorTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/imageViewArticleThumbnail"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="25 OCT at 15:30" />
+
+        <TextView
             android:id="@+id/textViewArticleTitle"
             style="@style/titleTextStyle"
             android:layout_width="0dp"
@@ -41,10 +53,11 @@
             android:id="@+id/imageViewArticleThumbnail"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewPublishDate"
             tools:ignore="ContentDescription" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

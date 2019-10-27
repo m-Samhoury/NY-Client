@@ -12,6 +12,7 @@ import com.moustafa.nyclient.base.BaseFragment
 import com.moustafa.nyclient.model.NYArticle
 import com.moustafa.nyclient.ui.misc.AsyncState
 import com.moustafa.nyclient.utils.ItemDecorationCustomMargins
+import com.moustafa.nyclient.utils.RecyclerViewInfinitScrollListener
 import com.moustafa.nyclient.utils.setExpansionAnimation
 import kotlinx.android.synthetic.main.fragment_articles_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -50,12 +51,12 @@ class ArticlesListFragment : BaseFragment(R.layout.fragment_articles_list) {
 
         searchView?.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                articlesListViewModel.queriedFetchNYArticles(searchQuery = query?:"")
+                articlesListViewModel.queriedFetchNYArticles(searchQuery = query ?: "")
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                articlesListViewModel.queriedFetchNYArticles(newText?:"")
+                articlesListViewModel.queriedFetchNYArticles(newText ?: "")
                 return true
             }
         })
@@ -121,7 +122,9 @@ class ArticlesListFragment : BaseFragment(R.layout.fragment_articles_list) {
             }
             is AsyncState.Failed -> {
                 showLoading(false)
-                showError(articlesListState.failed, articlesListState.action)
+                showError(articlesListState.failed) {
+                    articlesListViewModel.nextPageNYArticles(1)
+                }
             }
         }
 
@@ -130,8 +133,9 @@ class ArticlesListFragment : BaseFragment(R.layout.fragment_articles_list) {
     }
 
     override fun setupViews(rootView: View) {
+        val linearLayoutManager = LinearLayoutManager(context)
         recyclerViewArticlesList.apply {
-            layoutManager = LinearLayoutManager(context)
+            layoutManager = linearLayoutManager
             adapter = articlesListAdapter
             addItemDecoration(
                 ItemDecorationCustomMargins(
@@ -140,6 +144,12 @@ class ArticlesListFragment : BaseFragment(R.layout.fragment_articles_list) {
                 )
             )
         }
+        recyclerViewArticlesList.addOnScrollListener(
+            RecyclerViewInfinitScrollListener(
+                linearLayoutManager,
+                threshold = 3,
+                onEndReached = { articlesListViewModel.nextPageNYArticles(it) })
+        )
     }
 
     private fun showLoading(shouldShow: Boolean) {

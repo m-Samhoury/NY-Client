@@ -40,6 +40,7 @@ class ArticlesListScreenTest {
     fun `get articles list triggers loading state`() = coroutinesTestRule.runBlockingTest {
         val repository = object : Repository {
             override suspend fun fetchArticlesList(
+                page: Int,
                 searchQuery: String,
                 onError: (Exception) -> Unit
             ): List<NYArticle>? = emptyList()
@@ -59,6 +60,7 @@ class ArticlesListScreenTest {
     fun `get articles list and return success`() = coroutinesTestRule.runBlockingTest {
         val repository = object : Repository {
             override suspend fun fetchArticlesList(
+                page: Int,
                 searchQuery: String,
                 onError: (Exception) -> Unit
             ): List<NYArticle>? = seedDummyArticles(5)
@@ -82,6 +84,7 @@ class ArticlesListScreenTest {
     fun `get articles list and return failure`() = coroutinesTestRule.runBlockingTest {
         val repository = object : Repository {
             override suspend fun fetchArticlesList(
+                page: Int,
                 searchQuery: String,
                 onError: (Exception) -> Unit
             ): List<NYArticle>? {
@@ -111,6 +114,7 @@ class ArticlesListScreenTest {
     fun `filter articles list and return result`() = coroutinesTestRule.runBlockingTest {
         val repository = object : Repository {
             override suspend fun fetchArticlesList(
+                page: Int,
                 searchQuery: String,
                 onError: (Exception) -> Unit
             ): List<NYArticle>? = seedDummyArticles(5).filter {
@@ -137,6 +141,7 @@ class ArticlesListScreenTest {
     fun `filter articles list and return empty`() = coroutinesTestRule.runBlockingTest {
         val repository = object : Repository {
             override suspend fun fetchArticlesList(
+                page: Int,
                 searchQuery: String,
                 onError: (Exception) -> Unit
             ): List<NYArticle>? = seedDummyArticles(5).filter {

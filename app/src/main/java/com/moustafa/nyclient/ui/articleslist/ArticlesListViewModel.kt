@@ -25,25 +25,37 @@ class ArticlesListViewModel(
     private val state: ArticlesListState = ArticlesListState()
 ) : ViewModel() {
     private var searchFor = ""
+    private var currentPage = 1
+    private var currentList: List<NYArticle> = ArrayList<NYArticle>()
 
     private val _stateLiveData = MutableLiveData<ArticlesListState>()
     val stateLiveData: LiveData<ArticlesListState> = _stateLiveData
 
     init {
-        fetchNYArticles()
+        fetchNYArticles(currentPage)
     }
 
-    private fun fetchNYArticles(searchQuery: String = "") {
+    private fun fetchNYArticles(page: Int, searchQuery: String = "") {
+        if (state.articlesListAsyncState is AsyncState.Loading) return
+
         _stateLiveData.value = state.copy(articlesListAsyncState = AsyncState.Loading)
 
         viewModelScope.launch(Dispatchers.Main) {
-            val response = repository.fetchArticlesList(searchQuery) {
+            val response = repository.fetchArticlesList(page, searchQuery) {
                 _stateLiveData.value =
                     state.copy(articlesListAsyncState = AsyncState.Failed(it))
             }
             if (response != null) {
+                val shouldAppend = page > 1
+                currentPage = page + 1
+
+                currentList = if (shouldAppend) {
+                    currentList.plus(response)
+                } else {
+                    response
+                }
                 _stateLiveData.value =
-                    state.copy(articlesListAsyncState = AsyncState.Loaded(response))
+                    state.copy(articlesListAsyncState = AsyncState.Loaded(currentList))
             }
         }
     }
@@ -61,8 +73,13 @@ class ArticlesListViewModel(
                 return@launch
             }
 
-            fetchNYArticles(searchQuery)
+            fetchNYArticles(1, searchQuery)
         }
     }
 
+    fun nextPageNYArticles(nextPage: Int) {
+        if (state.articlesListAsyncState !is AsyncState.Loading) {
+            fetchNYArticles(nextPage, searchFor)
+        }
+    }
 }

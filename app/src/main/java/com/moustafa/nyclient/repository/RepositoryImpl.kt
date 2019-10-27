@@ -11,11 +11,12 @@ import com.moustafa.nyclient.repository.network.NYArticlesService
 class RepositoryImpl(val service: NYArticlesService) : Repository {
 
     override suspend fun fetchArticlesList(
+        page: Int,
         searchQuery: String,
         onError: (Exception) -> Unit
     ): List<NYArticle>? {
         val response = safeApiCall({
-            service.fetchArticlesList(query = searchQuery)
+            service.fetchArticlesList(page = page, query = searchQuery)
         }, onError)
 
         return response?.response?.docs

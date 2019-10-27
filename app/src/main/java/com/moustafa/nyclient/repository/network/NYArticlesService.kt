@@ -15,8 +15,10 @@ interface NYArticlesService {
 
     @GET("search/v2/articlesearch.json")
     suspend fun fetchArticlesList(
+        @Query("page") page: Int,
         @Query("q") query: String = "",
         @Query("fq") filter: String? = null,
+        @Query("sort") sort: String? = "newest",
         @Query("api-key") apiKey: String = BuildConfig.NY_API_KEY
     ): Response<NYArticlesResponse>
 }
