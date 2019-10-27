@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import com.moustafa.nyclient.R
@@ -26,6 +27,14 @@ class ArticlesListFragment : BaseFragment(R.layout.fragment_articles_list) {
 
     private val articlesListViewModel: ArticlesListViewModel by viewModel()
     private val articlesListAdapter = ArticlesListAdapter()
+    private val infiniteScrollListener by lazy {
+        RecyclerViewInfinitScrollListener(
+            lifecycleScope,
+            threshold = 3,
+            rateLimitIgnoreWithin = 2_000L,
+            onEndReached = { articlesListViewModel.nextPageNYArticles() }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,18 +121,22 @@ class ArticlesListFragment : BaseFragment(R.layout.fragment_articles_list) {
         when (val articlesListState = state.articlesListAsyncState) {
             AsyncState.Init -> {
                 showLoading(false)
+                infiniteScrollListener.setLoadInProgress(false)
             }
             AsyncState.Loading -> {
+                infiniteScrollListener.setLoadInProgress(true)
                 showLoading(true)
             }
             is AsyncState.Loaded -> {
+                infiniteScrollListener.setLoadInProgress(false)
                 showLoading(false)
                 populateArticlesList(articlesListState.result)
             }
             is AsyncState.Failed -> {
+                infiniteScrollListener.setLoadInProgress(false)
                 showLoading(false)
                 showError(articlesListState.failed) {
-                    articlesListViewModel.nextPageNYArticles(1)
+                    articlesListViewModel.nextPageNYArticles()
                 }
             }
         }
@@ -144,12 +157,7 @@ class ArticlesListFragment : BaseFragment(R.layout.fragment_articles_list) {
                 )
             )
         }
-        recyclerViewArticlesList.addOnScrollListener(
-            RecyclerViewInfinitScrollListener(
-                linearLayoutManager,
-                threshold = 3,
-                onEndReached = { articlesListViewModel.nextPageNYArticles(it) })
-        )
+        recyclerViewArticlesList.addOnScrollListener(infiniteScrollListener)
     }
 
     private fun showLoading(shouldShow: Boolean) {
@@ -174,5 +182,4 @@ class ArticlesListFragment : BaseFragment(R.layout.fragment_articles_list) {
         }
         snackBar.show()
     }
-
 }

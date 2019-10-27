@@ -41,9 +41,9 @@ class ArticlesListViewModel(
         _stateLiveData.value = state.copy(articlesListAsyncState = AsyncState.Loading)
 
         viewModelScope.launch(Dispatchers.Main) {
-            val response = repository.fetchArticlesList(page, searchQuery) {
+            val response = repository.fetchArticlesList(page, searchQuery) { exception: Exception ->
                 _stateLiveData.value =
-                    state.copy(articlesListAsyncState = AsyncState.Failed(it))
+                    state.copy(articlesListAsyncState = AsyncState.Failed(exception))
             }
             if (response != null) {
                 val shouldAppend = page > 1
@@ -77,9 +77,9 @@ class ArticlesListViewModel(
         }
     }
 
-    fun nextPageNYArticles(nextPage: Int) {
+    fun nextPageNYArticles() {
         if (state.articlesListAsyncState !is AsyncState.Loading) {
-            fetchNYArticles(nextPage, searchFor)
+            fetchNYArticles(currentPage, searchFor)
         }
     }
 }
